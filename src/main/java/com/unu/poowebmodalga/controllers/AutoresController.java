@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.unu.poowebmodalga.beans.Autor;
+import com.unu.poowebmodalga.beans.Producto;
 import com.unu.poowebmodalga.dto.AutorPaisDTO;
 import com.unu.poowebmodalga.models.AutoresModel;
 import com.unu.poowebmodalga.utilitarios.UtilsJson;
@@ -115,7 +115,7 @@ public class AutoresController extends HttpServlet {
 		try {
 			response.setContentType("text/html; charset=UTF-8");
 			String id = request.getParameter("id");
-			Autor autor = modelo.obtenerAutor(Integer.parseInt(id));
+			Producto autor = modelo.obtenerAutor(Integer.parseInt(id));
 
 			if (autor != null) {
 				request.setAttribute("autor", autor);
@@ -140,7 +140,7 @@ public class AutoresController extends HttpServlet {
 	private void insertar(HttpServletRequest request, HttpServletResponse response, boolean esAjax) {
 
 		try {
-			Autor autor = new Autor();
+			Producto autor = new Producto();
 			autor.setCodigoAutor(request.getParameter("codigo"));
 			autor.setNacionalidad(request.getParameter("nacionalidad"));
 			autor.setNombreAutor(request.getParameter("nombre"));
@@ -192,7 +192,7 @@ public class AutoresController extends HttpServlet {
 	private void modificar(HttpServletRequest request, HttpServletResponse response, boolean esAjax) {
 
 		try {
-			Autor autor = new Autor();
+			Producto autor = new Producto();
 			autor.setIdAutor(Integer.parseInt(request.getParameter("id")));
 			autor.setCodigoAutor(request.getParameter("codigo"));
 			autor.setNacionalidad(request.getParameter("nacionalidad"));

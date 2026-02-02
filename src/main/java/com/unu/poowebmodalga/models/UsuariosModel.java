@@ -88,7 +88,7 @@ public class UsuariosModel extends Conexion {
             this.abrirConexion();
             cs = conexion.prepareCall(sql);
             cs.setString(1, usuario.getNombreUsuario());
-            cs.setString(2, usuario.getPassword());
+            cs.setString(2, usuario.getContrasena());
             cs.setString(3, usuario.getNombreCompleto());
             cs.setString(4, usuario.getEmail());
             cs.setString(5, usuario.getRol());

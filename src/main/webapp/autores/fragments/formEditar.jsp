@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.unu.poowebmodalga.beans.Autor"%>
-<% 
+<%@ page import="com.unu.poowebmodalga.beans.Producto"%>
+<%
 String url = request.getContextPath() + "/";
-Autor autor = (Autor) request.getAttribute("autor");
+Producto autor = (Producto) request.getAttribute("autor");
 if(autor == null) {
-    autor = new Autor();
+    autor = new Producto();
 }
 %>
 

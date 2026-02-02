@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List"%>
 <%@ page import="com.unu.poowebmodalga.beans.Libro"%>
-<%@ page import="com.unu.poowebmodalga.beans.Autor"%>
-<%@ page import="com.unu.poowebmodalga.beans.Genero"%>
-<% 
+<%@ page import="com.unu.poowebmodalga.beans.Producto"%>
+<%@ page import="com.unu.poowebmodalga.beans.Categoria"%>
+<%
 String url = request.getContextPath() + "/";
 Libro libro = (Libro) request.getAttribute("libro");
-List<Autor> listaAutores = (List<Autor>) request.getAttribute("listaAutores");
-List<Genero> listaGeneros = (List<Genero>) request.getAttribute("listaGeneros");
+List<Producto> listaAutores = (List<Producto>) request.getAttribute("listaAutores");
+List<Categoria> listaGeneros = (List<Categoria>) request.getAttribute("listaGeneros");
 
 if(libro == null) {
     libro = new Libro();
@@ -41,15 +41,15 @@ if(libro == null) {
                 <option value="">Seleccione un autor...</option>
                 <%
                 if (listaAutores != null && !listaAutores.isEmpty()) {
-                    for (Autor autor : listaAutores) {
-                        String selected = (libro.getIdAutor() == autor.getIdAutor()) ? "selected" : "";
+                                                    for (Producto autor : listaAutores) {
+                                                        String selected = (libro.getIdAutor() == autor.getIdAutor()) ? "selected" : "";
                 %>
                 <option value="<%=autor.getIdAutor()%>" <%=selected%>>
                     <%=autor.getNombreAutor()%>
                 </option>
                 <%
-                    }
-                } else {
+                }
+                                } else {
                 %>
                 <option value="" disabled>No hay autores disponibles</option>
                 <%
@@ -69,8 +69,8 @@ if(libro == null) {
                 <option value="">Seleccione un género...</option>
                 <%
                 if (listaGeneros != null && !listaGeneros.isEmpty()) {
-                    for (Genero genero : listaGeneros) {
-                        String selected = (libro.getIdGenero() == genero.getIdGenero()) ? "selected" : "";
+                                    for (Categoria genero : listaGeneros) {
+                                        String selected = (libro.getIdGenero() == genero.getIdGenero()) ? "selected" : "";
                 %>
                 <option value="<%=genero.getIdGenero()%>" <%=selected%>>
                     <%=genero.getNombreGenero()%> (<%=genero.getAbreviatura()%>)

@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.unu.poowebmodalga.beans.Libro;
-import com.unu.poowebmodalga.dto.AutorPaisDTO;
 import com.unu.poowebmodalga.dto.LibroGenero;
 import com.unu.poowebmodalga.models.LibrosModel;
 import com.unu.poowebmodalga.utilitarios.UtilsJson;

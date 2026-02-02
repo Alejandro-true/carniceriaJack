@@ -17,7 +17,7 @@ String rol = (String) session.getAttribute("rol");
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Inicio - Sistema Biblioteca</title>
+<title>Inicio - Carniceria Jack</title>
 <style>
 .hero-section {
 	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -80,7 +80,7 @@ String rol = (String) session.getAttribute("rol");
 						<i class="fas fa-hand-sparkles"></i> ¡Bienvenido,
 						<%=nombreCompleto%>!
 					</h1>
-					<p class="lead">Sistema de Gestión de Biblioteca - Administra
+					<p class="lead">Carniceria Jack- Administra
 						autores, libros y más</p>
 				</div>
 				<div class="col-md-4 text-end">
@@ -105,9 +105,9 @@ String rol = (String) session.getAttribute("rol");
 					<div class="card card-module">
 						<div class="card-body">
 							<i class="fas fa-users module-autores"></i>
-							<h5 class="card-title">Autores</h5>
+							<h5 class="card-title">Producto</h5>
 							<p class="card-text text-muted">Gestiona la información de
-								los autores</p>
+								los productos</p>
 						</div>
 					</div>
 				</a>

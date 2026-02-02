@@ -139,7 +139,7 @@ public class UsuariosController extends HttpServlet {
         try {
             Usuario usuario = new Usuario();
             usuario.setNombreUsuario(request.getParameter("nombreUsuario"));
-            usuario.setPassword(request.getParameter("password"));
+            usuario.setContrasena(request.getParameter("password"));
             usuario.setNombreCompleto(request.getParameter("nombreCompleto"));
             usuario.setEmail(request.getParameter("email"));
             usuario.setRol(request.getParameter("rol"));

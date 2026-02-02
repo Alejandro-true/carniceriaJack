@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List"%>
-<%@ page import="com.unu.poowebmodalga.beans.Autor"%>
-<%@ page import="com.unu.poowebmodalga.beans.Genero"%>
+<%@ page import="com.unu.poowebmodalga.beans.Producto"%>
+<%@ page import="com.unu.poowebmodalga.beans.Categoria"%>
 <%
 String url = request.getContextPath() + "/";
-List<Autor> listaAutores = (List<Autor>) request.getAttribute("listaAutores");
-List<Genero> listaGeneros = (List<Genero>) request.getAttribute("listaGeneros");
+List<Producto> listaAutores = (List<Producto>) request.getAttribute("listaAutores");
+List<Categoria> listaGeneros = (List<Categoria>) request.getAttribute("listaGeneros");
 %>
 
 <form action="<%=url%>LibrosController" method="POST" id="formLibro" class="needs-validation" novalidate>
@@ -33,12 +33,12 @@ List<Genero> listaGeneros = (List<Genero>) request.getAttribute("listaGeneros");
                 <option value="">Seleccione un autor...</option>
                 <%
                 if (listaAutores != null && !listaAutores.isEmpty()) {
-                    for (Autor autor : listaAutores) {
+                                                    for (Producto autor : listaAutores) {
                 %>
                 <option value="<%=autor.getIdAutor()%>"><%=autor.getNombreAutor()%></option>
                 <%
-                    }
-                } else {
+                }
+                                } else {
                 %>
                 <option value="" disabled>No hay autores disponibles</option>
                 <%
@@ -58,7 +58,7 @@ List<Genero> listaGeneros = (List<Genero>) request.getAttribute("listaGeneros");
                 <option value="">Seleccione un género...</option>
                 <%
                 if (listaGeneros != null && !listaGeneros.isEmpty()) {
-                    for (Genero genero : listaGeneros) {
+                                    for (Categoria genero : listaGeneros) {
                 %>
                 <option value="<%=genero.getIdGenero()%>">
                     <%=genero.getNombreGenero()%> (<%=genero.getAbreviatura()%>)

@@ -53,9 +53,6 @@ public class LoginController extends HttpServlet {
         request.getRequestDispatcher("/auth/login.jsp").forward(request, response);
     }
 
-    /**
-     * Autentica al usuario
-     */
     private void autenticar(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         

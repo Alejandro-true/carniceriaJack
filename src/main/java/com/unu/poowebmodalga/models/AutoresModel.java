@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.unu.poowebmodalga.beans.Autor;
+import com.unu.poowebmodalga.beans.Producto;
 import com.unu.poowebmodalga.dto.AutorPaisDTO;
 import com.unu.poowebmodalga.utilitarios.Conexion;
 
@@ -15,16 +15,16 @@ public class AutoresModel extends Conexion {
 	CallableStatement cs;
 	ResultSet rs;
 
-	public List<Autor> listarAutores() {
+	public List<Producto> listarAutores() {
 
 		try {
-			ArrayList<Autor> autores = new ArrayList<>();
+			ArrayList<Producto> autores = new ArrayList<>();
 			String sql = "CALL sp_listarAutores()";
 			this.abrirConexion();
 			cs = conexion.prepareCall(sql);
 			rs = cs.executeQuery();
 			while (rs.next()) {
-				Autor autor = new Autor();
+				Producto autor = new Producto();
 				autor.setIdAutor(rs.getInt("idautores"));
 				autor.setCodigoAutor(rs.getString("codigoAutor"));
 				autor.setNacionalidad(rs.getString("nacionalidad"));
@@ -42,7 +42,7 @@ public class AutoresModel extends Conexion {
 
 	}
 
-	public int insertarAutor(Autor autor) {
+	public int insertarAutor(Producto autor) {
 		try {
 
 			int filasAfectadas = 0;
@@ -64,8 +64,8 @@ public class AutoresModel extends Conexion {
 		}
 	}
 
-	public Autor obtenerAutor(int idautor) {
-		Autor autor = new Autor();
+	public Producto obtenerAutor(int idautor) {
+		Producto autor = new Producto();
 		try {
 			String sql = "CALL sp_obtenerAutor(?)";
 			this.abrirConexion();
@@ -87,7 +87,7 @@ public class AutoresModel extends Conexion {
 		return autor;
 	}
 
-	public int modificarAutor(Autor autor) {
+	public int modificarAutor(Producto autor) {
 		try {
 			int filasAfectadas = 0;
 			String sql = "CALL sp_modificarAutor(?,?,?,?)";

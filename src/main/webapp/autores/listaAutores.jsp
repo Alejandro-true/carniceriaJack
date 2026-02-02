@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.List"%>
-<%@ page import="com.unu.poowebmodalga.beans.Autor"%>
+<%@ page import="com.unu.poowebmodalga.beans.Producto"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,7 +28,7 @@ String url = request.getContextPath() + "/";
 		<!-- Mensajes de sesión -->
 		<%
 		String mensaje = (String) session.getAttribute("mensaje");
-		if (mensaje != null) {
+				if (mensaje != null) {
 		%>
 		<div class="alert alert-info alert-dismissible fade show" role="alert">
 			<i class="fas fa-info-circle"></i>
@@ -37,7 +37,7 @@ String url = request.getContextPath() + "/";
 		</div>
 		<%
 		session.removeAttribute("mensaje");
-		}
+				}
 		%>
 
 		<!-- Botón Nuevo Autor -->
@@ -60,9 +60,9 @@ String url = request.getContextPath() + "/";
 				</thead>
 				<tbody>
 					<%
-					List<Autor> listaAutores = (List<Autor>) request.getAttribute("listaAutores");
-					if (listaAutores != null && !listaAutores.isEmpty()) {
-						for (Autor autor : listaAutores) {
+					List<Producto> listaAutores = (List<Producto>) request.getAttribute("listaAutores");
+								if (listaAutores != null && !listaAutores.isEmpty()) {
+									for (Producto autor : listaAutores) {
 					%>
 					<tr>
 						<td><code><%=autor.getCodigoAutor()%></code></td>

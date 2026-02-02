@@ -6,7 +6,7 @@ public class Usuario {
     
     private int idUsuario;
     private String nombreUsuario;
-    private String password;
+    private String contrasena;
     private String nombreCompleto;
     private String email;
     private String rol;
@@ -18,7 +18,7 @@ public class Usuario {
     
     public Usuario(String nombreUsuario, String password, String nombreCompleto, String email, String rol) {
         this.nombreUsuario = nombreUsuario;
-        this.password = password;
+        this.contrasena = password;
         this.nombreCompleto = nombreCompleto;
         this.email = email;
         this.rol = rol;
@@ -41,15 +41,16 @@ public class Usuario {
         this.nombreUsuario = nombreUsuario;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public String getContrasena() {
+		return contrasena;
+	}
 
-    public String getNombreCompleto() {
+	public void setContrasena(String contrasena) {
+		this.contrasena = contrasena;
+	}
+
+	public String getNombreCompleto() {
         return nombreCompleto;
     }
 
