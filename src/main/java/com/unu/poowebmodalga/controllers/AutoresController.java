@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 import com.unu.poowebmodalga.beans.Producto;
 import com.unu.poowebmodalga.dto.AutorPaisDTO;
-import com.unu.poowebmodalga.models.AutoresModel;
+import com.unu.poowebmodalga.models.ProductoModel;
 import com.unu.poowebmodalga.utilitarios.UtilsJson;
 
 @WebServlet("/AutoresController")
@@ -24,7 +24,7 @@ import com.unu.poowebmodalga.utilitarios.UtilsJson;
 public class AutoresController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	AutoresModel modelo = new AutoresModel();
+	ProductoModel modelo = new ProductoModel();
 
 	public AutoresController() {
 		super();

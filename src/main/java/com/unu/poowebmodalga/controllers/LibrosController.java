@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.unu.poowebmodalga.beans.Libro;
 import com.unu.poowebmodalga.dto.LibroGenero;
-import com.unu.poowebmodalga.models.LibrosModel;
+import com.unu.poowebmodalga.models.ClienteModel;
+import com.unu.poowebmodalga.models.ProductoModel;
 import com.unu.poowebmodalga.utilitarios.UtilsJson;
 
 @WebServlet("/LibrosController")
@@ -23,7 +23,7 @@ import com.unu.poowebmodalga.utilitarios.UtilsJson;
 public class LibrosController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	LibrosModel modelo = new LibrosModel();
+	ProductoModel modelo = new ProductoModel();
 
 	public LibrosController() {
 		super();
@@ -83,8 +83,8 @@ public class LibrosController extends HttpServlet {
 	private void listar(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			response.setContentType("text/html; charset=UTF-8");
-			request.setAttribute("listaLibros", modelo.listarLibros());
-			request.getRequestDispatcher("/libros/listaLibros.jsp").forward(request, response);
+			request.setAttribute("listaProducto", modelo.listarProducto());
+			request.getRequestDispatcher("/producto/listaProductos.jsp").forward(request, response);
 		} catch (ServletException | IOException e) {
 			Logger.getLogger(LibrosController.class.getName()).log(Level.SEVERE, null, e);
 		}

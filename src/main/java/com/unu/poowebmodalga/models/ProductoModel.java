@@ -10,30 +10,31 @@ import com.unu.poowebmodalga.beans.Producto;
 import com.unu.poowebmodalga.dto.AutorPaisDTO;
 import com.unu.poowebmodalga.utilitarios.Conexion;
 
-public class AutoresModel extends Conexion {
+public class ProductoModel extends Conexion {
 
 	CallableStatement cs;
 	ResultSet rs;
 
-	public List<Producto> listarAutores() {
+	public List<Producto> listarProducto() {
 
 		try {
-			ArrayList<Producto> autores = new ArrayList<>();
-			String sql = "CALL sp_listarAutores()";
+			ArrayList<Producto> productos = new ArrayList<>();
+			String sql = "CALL sp_listarProducto()";
 			this.abrirConexion();
 			cs = conexion.prepareCall(sql);
 			rs = cs.executeQuery();
 			while (rs.next()) {
-				Producto autor = new Producto();
-				autor.setIdAutor(rs.getInt("idautores"));
-				autor.setCodigoAutor(rs.getString("codigoAutor"));
-				autor.setNacionalidad(rs.getString("nacionalidad"));
-				autor.setNombreAutor(rs.getString("nombreAutor"));
-				autores.add(autor);
+				Producto producto = new Producto();
+				producto.setIdProducto(rs.getInt("id_producto"));
+				producto.setNombreProducto(rs.getString("nombre"));
+				producto.setPrecioUnitario(rs.getDouble("precio"));
+				producto.setStock(rs.getInt("stock"));
+				producto.setIdCategoria(rs.getInt("id_categoria"));
+				productos.add(producto);
 			}
 
 			this.cerrarConexion();
-			return autores;
+			return productos;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			this.cerrarConexion();
@@ -42,17 +43,18 @@ public class AutoresModel extends Conexion {
 
 	}
 
-	public int insertarAutor(Producto autor) {
+	public int insertarCategoria(Producto producto) {
 		try {
 
 			int filasAfectadas = 0;
-			String sql = "CALL sp_insertarAutor(?,?,?)";
+			String sql = "CALL sp_insertarProducto(?,?,?)";
 
 			this.abrirConexion();
 			cs = conexion.prepareCall(sql);
-			cs.setString(1, autor.getCodigoAutor());
-			cs.setString(2, autor.getNacionalidad());
-			cs.setString(3, autor.getNombreAutor());
+			cs.setString(1, producto.getNombreProducto());
+			cs.setDouble(2, producto.getPrecioUnitario());
+			cs.setInt(3, producto.getStock());
+			cs.setInt(4, producto.getIdCategoria());
 			filasAfectadas = cs.executeUpdate();
 			this.cerrarConexion();
 			return filasAfectadas;
@@ -64,19 +66,20 @@ public class AutoresModel extends Conexion {
 		}
 	}
 
-	public Producto obtenerAutor(int idautor) {
-		Producto autor = new Producto();
+	public Producto obtenerProducto(int idProducto) {
+		Producto producto = new Producto();
 		try {
 			String sql = "CALL sp_obtenerAutor(?)";
 			this.abrirConexion();
 			cs = conexion.prepareCall(sql);
-			cs.setInt(1, idautor);
+			cs.setInt(1, idProducto);
 			rs = cs.executeQuery();
 			if (rs.next()) {
-				autor.setIdAutor(rs.getInt("idautores"));
-				autor.setCodigoAutor(rs.getString("codigoAutor"));
-				autor.setNombreAutor(rs.getString("nombreAutor"));
-				autor.setNacionalidad(rs.getString("nacionalidad"));
+				producto.setIdProducto(rs.getInt("id_producto"));
+				producto.setNombreProducto(rs.getString("nombre"));
+				producto.setPrecioUnitario(rs.getDouble("precio"));
+				producto.setStock(rs.getInt("stock"));
+				producto.setIdCategoria(rs.getInt("id_categoria"));
 			}
 			this.cerrarConexion();
 		} catch (Exception e) {
@@ -84,19 +87,19 @@ public class AutoresModel extends Conexion {
 			this.cerrarConexion();
 			return null;
 		}
-		return autor;
+		return producto;
 	}
 
-	public int modificarAutor(Producto autor) {
+	public int modificarAutor(Producto producto) {
 		try {
 			int filasAfectadas = 0;
-			String sql = "CALL sp_modificarAutor(?,?,?,?)";
+			String sql = "CALL sp_modificarProducto(?,?,?,?)";
 			this.abrirConexion();
 			cs = conexion.prepareCall(sql);
-			cs.setInt(1, autor.getIdAutor());
-			cs.setString(2, autor.getCodigoAutor());
-			cs.setString(3, autor.getNacionalidad());
-			cs.setString(4, autor.getNombreAutor());
+			cs.setString(1, producto.getNombreProducto());
+			cs.setDouble(2, producto.getPrecioUnitario());
+			cs.setInt(3, producto.getStock());
+			cs.setInt(4, producto.getIdCategoria());
 			filasAfectadas = cs.executeUpdate();
 
 			// IMPORTANTE: Cerrar la conexión antes de retornar

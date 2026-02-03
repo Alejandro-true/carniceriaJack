@@ -3,7 +3,7 @@ package com.unu.poowebmodalga.beans;
 public class Producto {
 	private int idProducto;
 	private String nombreProducto;
-	private String precioUnitario;
+	private double precioUnitario;
 	private int stock;
 	private int idCategoria;
 
@@ -12,7 +12,7 @@ public class Producto {
 	}
 
 	
-	public Producto(int idProducto, String nombreProducto, String precioUnitario, int stock, int idCategoria) {
+	public Producto(int idProducto, String nombreProducto, double precioUnitario, int stock, int idCategoria) {
 		super();
 		this.idProducto = idProducto;
 		this.nombreProducto = nombreProducto;
@@ -38,11 +38,11 @@ public class Producto {
 		this.nombreProducto = nombreProducto;
 	}
 
-	public String getPrecioUnitario() {
+	public double getPrecioUnitario() {
 		return precioUnitario;
 	}
 
-	public void setPrecioUnitario(String precioUnitario) {
+	public void setPrecioUnitario(double precioUnitario) {
 		this.precioUnitario = precioUnitario;
 	}
 

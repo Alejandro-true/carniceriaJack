@@ -1,0 +1,15 @@
+# Eclipse
+.settings/
+.project
+.classpath
+
+# Compilados
+/bin/
+/build/
+/target/
+
+# Logs
+*.log
+
+# Sistema
+.DS_Store
