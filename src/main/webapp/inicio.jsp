@@ -438,7 +438,7 @@ footer {
     <div class="cat-grid">
 
         <!-- RES -->
-        <a href="<%=url%>LibrosController?op=listar&categoria=res" class="cat-card">
+        <a href="<%=url%>ProductoController?op=listar&categoria=res" class="cat-card">
             <div class="cat-stripe stripe-res"></div>
             <div class="cat-icon-wrap icon-res"><i class="fas fa-bone"></i></div>
             <div class="cat-body">
@@ -449,7 +449,7 @@ footer {
         </a>
 
         <!-- CHANCHO -->
-        <a href="<%=url%>LibrosController?op=listar&categoria=chancho" class="cat-card">
+        <a href="<%=url%>ProductoController?op=listar&categoria=chancho" class="cat-card">
             <div class="cat-stripe stripe-chancho"></div>
             <div class="cat-icon-wrap icon-chancho"><i class="fas fa-drumstick-bite"></i></div>
             <div class="cat-body">
@@ -460,7 +460,7 @@ footer {
         </a>
 
         <!-- EMBUTIDOS -->
-        <a href="<%=url%>LibrosController?op=listar&categoria=embutido" class="cat-card">
+        <a href="<%=url%>ProductoController?op=listar&categoria=embutido" class="cat-card">
             <div class="cat-stripe stripe-embutido"></div>
             <div class="cat-icon-wrap icon-embutido"><i class="fas fa-hot-tub"></i></div>
             <div class="cat-body">
@@ -486,7 +486,7 @@ footer {
         <%
         } else {
         %>
-        <a href="<%=url%>LibrosController?op=listar" class="cat-card">
+        <a href="<%=url%>ProductoController?op=listar" class="cat-card">
             <div class="cat-stripe" style="background:linear-gradient(90deg,var(--blood-deep),var(--blood-soft));"></div>
             <div class="cat-icon-wrap" style="background:#FEE8E8; color:var(--blood);"><i class="fas fa-list"></i></div>
             <div class="cat-body">

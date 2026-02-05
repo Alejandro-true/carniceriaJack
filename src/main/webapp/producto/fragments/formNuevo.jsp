@@ -4,22 +4,21 @@
 <%@ page import="com.unu.poowebmodalga.beans.Categoria"%>
 <%
 String url = request.getContextPath() + "/";
-List<Producto> listaAutores = (List<Producto>) request.getAttribute("listaAutores");
-List<Categoria> listaGeneros = (List<Categoria>) request.getAttribute("listaGeneros");
+List<Categoria> listaCategoria = (List<Categoria>) request.getAttribute("listaCategoria");
 %>
 
-<form action="<%=url%>LibrosController" method="POST" id="formLibro" class="needs-validation" novalidate>
+<form action="<%=url%>ProductoController" method="POST" id="formLibro" class="needs-validation" novalidate>
     <input type="hidden" name="op" value="insertarAjax">
     
     <div class="row">
         <div class="col-md-12 mb-3">
             <label for="nombre" class="form-label">
-                <i class="fas fa-book"></i> Título del Libro <span class="text-danger">*</span>
+                <i class="fas fa-book"></i> Nombre del Producto <span class="text-danger">*</span>
             </label>
             <input type="text" class="form-control" name="nombre" id="nombre" 
                 placeholder="Ej: Cien años de soledad" required>
             <div class="invalid-feedback">
-                Por favor ingrese el título del libro
+                Por favor ingrese el nombre del producto
             </div>
         </div>
     </div>
@@ -27,66 +26,43 @@ List<Categoria> listaGeneros = (List<Categoria>) request.getAttribute("listaGene
     <div class="row">
         <div class="col-md-6 mb-3">
             <label for="autor" class="form-label">
-                <i class="fas fa-user"></i> Autor <span class="text-danger">*</span>
+                <i class="fas fa-user"></i> Categoria <span class="text-danger">*</span>
             </label>
-            <select class="form-select" name="autor" id="autor" required>
-                <option value="">Seleccione un autor...</option>
+            <select class="form-select" name="categoria" id="categoria" required>
+                <option value="">Seleccione una categoria...</option>
                 <%
-                if (listaAutores != null && !listaAutores.isEmpty()) {
-                                                    for (Producto autor : listaAutores) {
+                if (listaCategoria != null && !listaCategoria.isEmpty()) {
+                                                    for (Categoria categoria : listaCategoria) {
+                                                       
                 %>
-                <option value="<%=autor.getIdAutor()%>"><%=autor.getNombreAutor()%></option>
+                <option value="<%=categoria.getIdCategoria()%>">
+                    <%=categoria.getNombreCategoria()%>
+                </option>
                 <%
                 }
                                 } else {
                 %>
-                <option value="" disabled>No hay autores disponibles</option>
+                <option value="" disabled>No hay categorias disponibles</option>
                 <%
                 }
                 %>
             </select>
             <div class="invalid-feedback">
-                Por favor seleccione un autor
+                Por favor seleccione una Categoria
             </div>
         </div>
         
-        <div class="col-md-6 mb-3">
-            <label for="genero" class="form-label">
-                <i class="fas fa-tag"></i> Género <span class="text-danger">*</span>
-            </label>
-            <select class="form-select" name="genero" id="genero" required>
-                <option value="">Seleccione un género...</option>
-                <%
-                if (listaGeneros != null && !listaGeneros.isEmpty()) {
-                                    for (Categoria genero : listaGeneros) {
-                %>
-                <option value="<%=genero.getIdGenero()%>">
-                    <%=genero.getNombreGenero()%> (<%=genero.getAbreviatura()%>)
-                </option>
-                <%
-                    }
-                } else {
-                %>
-                <option value="" disabled>No hay géneros disponibles</option>
-                <%
-                }
-                %>
-            </select>
-            <div class="invalid-feedback">
-                Por favor seleccione un género
-            </div>
-        </div>
-    </div>
+
     
     <div class="row">
         <div class="col-md-6 mb-3">
             <label for="existencia" class="form-label">
-                <i class="fas fa-boxes"></i> Existencia <span class="text-danger">*</span>
+                <i class="fas fa-boxes"></i> Stock <span class="text-danger">*</span>
             </label>
-            <input type="number" class="form-control" name="existencia" id="existencia" 
+            <input type="number" class="form-control" name="stock" id="stock" 
                 placeholder="Ej: 10" min="0" required>
             <div class="invalid-feedback">
-                Por favor ingrese la existencia
+                Por favor ingrese el stock
             </div>
         </div>
         
@@ -99,17 +75,6 @@ List<Categoria> listaGeneros = (List<Categoria>) request.getAttribute("listaGene
             <div class="invalid-feedback">
                 Por favor ingrese el precio
             </div>
-        </div>
-    </div>
-    
-    <div class="mb-3">
-        <label for="descripcion" class="form-label">
-            <i class="fas fa-align-left"></i> Descripción <span class="text-danger">*</span>
-        </label>
-        <textarea class="form-control" name="descripcion" id="descripcion" 
-            rows="3" placeholder="Breve descripción del libro..." required></textarea>
-        <div class="invalid-feedback">
-            Por favor ingrese una descripción
         </div>
     </div>
     

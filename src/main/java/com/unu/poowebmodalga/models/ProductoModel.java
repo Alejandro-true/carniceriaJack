@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.unu.poowebmodalga.beans.Producto;
-import com.unu.poowebmodalga.dto.AutorPaisDTO;
 import com.unu.poowebmodalga.utilitarios.Conexion;
 
 public class ProductoModel extends Conexion {
@@ -43,11 +42,11 @@ public class ProductoModel extends Conexion {
 
 	}
 
-	public int insertarCategoria(Producto producto) {
+	public int insertarProducto(Producto producto) {
 		try {
 
 			int filasAfectadas = 0;
-			String sql = "CALL sp_insertarProducto(?,?,?)";
+			String sql = "CALL sp_insertarProducto(?,?,?,?)";
 
 			this.abrirConexion();
 			cs = conexion.prepareCall(sql);
@@ -69,8 +68,8 @@ public class ProductoModel extends Conexion {
 	public Producto obtenerProducto(int idProducto) {
 		Producto producto = new Producto();
 		try {
-			String sql = "CALL sp_obtenerAutor(?)";
-			this.abrirConexion();
+			String sql = "CALL sp_obtenerProducto(?)";
+			this.abrirConexion();	
 			cs = conexion.prepareCall(sql);
 			cs.setInt(1, idProducto);
 			rs = cs.executeQuery();
@@ -90,16 +89,17 @@ public class ProductoModel extends Conexion {
 		return producto;
 	}
 
-	public int modificarAutor(Producto producto) {
+	public int modificarProducto(Producto producto) {
 		try {
 			int filasAfectadas = 0;
-			String sql = "CALL sp_modificarProducto(?,?,?,?)";
+			String sql = "CALL sp_modificarProducto(?,?,?,?,?)";
 			this.abrirConexion();
 			cs = conexion.prepareCall(sql);
-			cs.setString(1, producto.getNombreProducto());
-			cs.setDouble(2, producto.getPrecioUnitario());
-			cs.setInt(3, producto.getStock());
-			cs.setInt(4, producto.getIdCategoria());
+			cs.setInt(1, producto.getIdProducto());
+			cs.setString(2, producto.getNombreProducto());
+			cs.setDouble(3, producto.getPrecioUnitario());
+			cs.setInt(4, producto.getStock());
+			cs.setInt(5, producto.getIdCategoria());
 			filasAfectadas = cs.executeUpdate();
 
 			// IMPORTANTE: Cerrar la conexión antes de retornar
@@ -113,16 +113,15 @@ public class ProductoModel extends Conexion {
 		}
 	}
 
-	public int eliminarAutor(int idautor) {
+	public int eliminarProducto(int idautor) {
 		try {
 			int filasAfectadas = 0;
-			String sql = "CALL sp_eliminarAutor(?)";
+			String sql = "CALL sp_eliminarProducto(?)";
 			this.abrirConexion();
 			cs = conexion.prepareCall(sql);
 			cs.setInt(1, idautor);
 			filasAfectadas = cs.executeUpdate();
 
-			// IMPORTANTE: Cerrar la conexión antes de retornar
 			this.cerrarConexion();
 			return filasAfectadas;
 
@@ -131,27 +130,6 @@ public class ProductoModel extends Conexion {
 			this.cerrarConexion();
 			return 0;
 		}
-	}
-
-	public List<AutorPaisDTO> obtenerAutoresPorPais() {
-
-		try {
-			ArrayList<AutorPaisDTO> autores = new ArrayList<>();
-			String sql = "CALL sp_ObtenerAutoresPais()";
-			this.abrirConexion();
-			cs = conexion.prepareCall(sql);
-			rs = cs.executeQuery();
-			while (rs.next()) {
-				autores.add(new AutorPaisDTO(rs.getString("pais"), rs.getInt("total")));
-			}
-			this.cerrarConexion();
-			return autores;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			this.cerrarConexion();
-			return null;
-		}
-
 	}
 
 }

@@ -795,7 +795,7 @@ const modalLibro = {
         this.mostrarSpinner();
         this.instance.show();
 
-        let fetchUrl = '<%=url%>LibrosController?op=' + tipo + '&modal=true';
+        let fetchUrl = '<%=url%>ProductoController?op=' + tipo + '&modal=true';
         if (id) fetchUrl += '&id=' + id;
 
         fetch(fetchUrl)
@@ -846,7 +846,7 @@ const modalLibro = {
         if (!op || !op.endsWith('Ajax')) formData.set('op', 'insertarAjax');
         formData.set('ajax', 'true');
 
-        fetch('<%=url%>LibrosController', {
+        fetch('<%=url%>ProductoController', {
             method: 'POST',
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
             body: formData
@@ -863,7 +863,7 @@ const modalLibro = {
                 this.mostrarMensaje(data.mensaje, 'success');
                 setTimeout(() => {
                     this.instance.hide();
-                    location.href = '<%=url%>LibrosController?op=listar';
+                    location.href = '<%=url%>ProductoController?op=listar';
                 }, 1400);
             } else {
                 this.mostrarMensaje(data.mensaje, 'danger');
@@ -918,7 +918,7 @@ document.getElementById('btnConfirmDel').addEventListener('click', function () {
     if (_deleteId === null) return;
     // Cerrar modal y redirigir
     bootstrap.Modal.getInstance(document.getElementById('modalConfirmar')).hide();
-    window.location.href = '<%=url%>LibrosController?op=eliminar&id=' + _deleteId;
+    window.location.href = '<%=url%>ProductoController?op=eliminar&id=' + _deleteId;
 });
 
 // ============================================================

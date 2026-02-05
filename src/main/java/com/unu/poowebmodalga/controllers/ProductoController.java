@@ -13,19 +13,21 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.unu.poowebmodalga.beans.Producto;
 import com.unu.poowebmodalga.dto.LibroGenero;
+import com.unu.poowebmodalga.models.CategoriaModel;
 import com.unu.poowebmodalga.models.ClienteModel;
 import com.unu.poowebmodalga.models.ProductoModel;
 import com.unu.poowebmodalga.utilitarios.UtilsJson;
 
-@WebServlet("/LibrosController")
+@WebServlet("/ProductoController")
 @MultipartConfig
-public class LibrosController extends HttpServlet {
+public class ProductoController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	ProductoModel modelo = new ProductoModel();
-
-	public LibrosController() {
+	CategoriaModel modeloCategoria = new CategoriaModel();
+	public ProductoController() {
 		super();
 	}
 
@@ -86,81 +88,83 @@ public class LibrosController extends HttpServlet {
 			request.setAttribute("listaProducto", modelo.listarProducto());
 			request.getRequestDispatcher("/producto/listaProductos.jsp").forward(request, response);
 		} catch (ServletException | IOException e) {
-			Logger.getLogger(LibrosController.class.getName()).log(Level.SEVERE, null, e);
+			Logger.getLogger(ProductoController.class.getName()).log(Level.SEVERE, null, e);
+		}
+	}
+
+	private void listarPorCategoria(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			response.setContentType("text/html; charset=UTF-8");
+			request.setAttribute("listaProducto", modelo.listarProducto());
+			request.getRequestDispatcher("/producto/listaProductos.jsp").forward(request, response);
+		} catch (ServletException | IOException e) {
+			Logger.getLogger(ProductoController.class.getName()).log(Level.SEVERE, null, e);
 		}
 	}
 
 	/**
-	 * Carga el formulario para nuevo libro
+	 * Carga el formulario para nuevo producto
 	 */
 	private void cargarFormularioNuevo(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			response.setContentType("text/html; charset=UTF-8");
 			boolean esModal = request.getParameter("modal") != null;
 
-			// Cargar listas para los combos
-			request.setAttribute("listaAutores", modelo.listarAutores());
-			request.setAttribute("listaGeneros", modelo.listarGeneros());
+			request.setAttribute("listaCategoria", modeloCategoria.listarCategorias());
 
-			String jsp = esModal ? "/libros/fragments/formNuevo.jsp" : "/libros/nuevoLibro.jsp";
+			String jsp = esModal ? "/producto/fragments/formNuevo.jsp" : "/producto/nuevoLibro.jsp";
 			request.getRequestDispatcher(jsp).forward(request, response);
 		} catch (ServletException | IOException e) {
-			Logger.getLogger(LibrosController.class.getName()).log(Level.SEVERE, null, e);
+			Logger.getLogger(ProductoController.class.getName()).log(Level.SEVERE, null, e);
 		}
 	}
 
 	/**
-	 * Carga el formulario para editar libro
+	 * Carga el formulario para editar producto
 	 */
 	private void cargarFormularioEditar(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			response.setContentType("text/html; charset=UTF-8");
 			String id = request.getParameter("id");
-			Libro libro = modelo.obtenerLibro(Integer.parseInt(id));
-
-			if (libro != null) {
-				request.setAttribute("libro", libro);
-
-				// Cargar listas para los combos
-				request.setAttribute("listaAutores", modelo.listarAutores());
-				request.setAttribute("listaGeneros", modelo.listarGeneros());
+			Producto producto = modelo.obtenerProducto(Integer.parseInt(id));
+			request.setAttribute("listaCategoria", modeloCategoria.listarCategorias());
+			if (producto != null) {
+				request.setAttribute("producto", producto);
 
 				boolean esModal = request.getParameter("modal") != null;
-				String jsp = esModal ? "/libros/fragments/formEditar.jsp" : "/libros/editarLibro.jsp";
+				String jsp = esModal ? "/producto/fragments/formEditar.jsp" : "/producto/editarLibro.jsp";
 
 				request.getRequestDispatcher(jsp).forward(request, response);
 			} else {
 				response.sendRedirect(request.getContextPath() + "/error404.jsp");
 			}
 		} catch (Exception e) {
-			Logger.getLogger(LibrosController.class.getName()).log(Level.SEVERE, null, e);
+			Logger.getLogger(ProductoController.class.getName()).log(Level.SEVERE, null, e);
 		}
 	}
 
 	/**
-	 * Inserta un nuevo libro
+	 * Inserta un nuevo producto
 	 */
 	private void insertar(HttpServletRequest request, HttpServletResponse response, boolean esAjax) {
 		try {
-			Libro libro = new Libro();
-			libro.setNombreLibro(request.getParameter("nombre"));
-			libro.setExistencia(Integer.parseInt(request.getParameter("existencia")));
-			libro.setPrecio(Double.parseDouble(request.getParameter("precio")));
-			libro.setDescripcion(request.getParameter("descripcion"));
-			libro.setIdAutor(Integer.parseInt(request.getParameter("autor")));
-			libro.setIdGenero(Integer.parseInt(request.getParameter("genero")));
+			Producto producto = new Producto();
+			producto.setNombreProducto(request.getParameter("nombre"));
+			producto.setStock(Integer.parseInt(request.getParameter("stock")));
+			producto.setPrecioUnitario(Double.parseDouble(request.getParameter("precio")));
+			producto.setIdCategoria(Integer.parseInt(request.getParameter("categoria")));
 
-			int resultado = modelo.insertarLibro(libro);
+			int resultado = modelo.insertarProducto(producto);
 
 			if (esAjax) {
 				enviarJSON(response, resultado > 0,
-						resultado > 0 ? "Libro registrado exitosamente" : "Error al registrar libro");
+						resultado > 0 ? "Producto registrado exitosamente" : "Error al registrar producto");
 			} else {
 				response.setContentType("text/html; charset=UTF-8");
 				if (resultado > 0) {
-					request.getSession().setAttribute("mensaje", "Libro registrado exitosamente");
+					request.getSession().setAttribute("mensaje", "Producto registrado exitosamente");
 				} else {
-					request.getSession().setAttribute("mensaje", "Error al registrar libro");
+					request.getSession().setAttribute("mensaje", "Error al registrar Producto");
 				}
 				listar(request, response);
 			}
@@ -182,30 +186,28 @@ public class LibrosController extends HttpServlet {
 	}
 
 	/**
-	 * Modifica un libro existente
+	 * Modifica un producto existente
 	 */
 	private void modificar(HttpServletRequest request, HttpServletResponse response, boolean esAjax) {
 		try {
-			Libro libro = new Libro();
-			libro.setIdLibro(Integer.parseInt(request.getParameter("id")));
-			libro.setNombreLibro(request.getParameter("nombre"));
-			libro.setExistencia(Integer.parseInt(request.getParameter("existencia")));
-			libro.setPrecio(Double.parseDouble(request.getParameter("precio")));
-			libro.setDescripcion(request.getParameter("descripcion"));
-			libro.setIdAutor(Integer.parseInt(request.getParameter("autor")));
-			libro.setIdGenero(Integer.parseInt(request.getParameter("genero")));
+			Producto producto = new Producto();
+			producto.setIdProducto(Integer.parseInt(request.getParameter("id")));
+			producto.setNombreProducto(request.getParameter("nombre"));
+			producto.setStock(Integer.parseInt(request.getParameter("stock")));
+			producto.setPrecioUnitario(Double.parseDouble(request.getParameter("precio")));
+			producto.setIdCategoria(Integer.parseInt(request.getParameter("categoria")));
 
-			int resultado = modelo.modificarLibro(libro);
+			int resultado = modelo.modificarProducto(producto);
 
 			if (esAjax) {
 				enviarJSON(response, resultado > 0,
-						resultado > 0 ? "Libro modificado exitosamente" : "Error al modificar libro");
+						resultado > 0 ? "Producto modificado exitosamente" : "Error al modificar Producto");
 			} else {
 				response.setContentType("text/html; charset=UTF-8");
 				if (resultado > 0) {
-					request.getSession().setAttribute("mensaje", "Libro modificado exitosamente");
+					request.getSession().setAttribute("mensaje", "Producto modificado exitosamente");
 				} else {
-					request.getSession().setAttribute("mensaje", "Error al modificar libro");
+					request.getSession().setAttribute("mensaje", "Error al modificar Producto");
 				}
 				listar(request, response);
 			}
@@ -227,19 +229,19 @@ public class LibrosController extends HttpServlet {
 	}
 
 	/**
-	 * Elimina un libro
+	 * Elimina un producto
 	 */
 	private void eliminar(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			response.setContentType("text/html; charset=UTF-8");
 			int id = Integer.parseInt(request.getParameter("id"));
 
-			int resultado = modelo.eliminarLibro(id);
-			String mensaje = resultado > 0 ? "Libro eliminado exitosamente" : "Error al eliminar libro";
+			int resultado = modelo.eliminarProducto(id);
+			String mensaje = resultado > 0 ? "Producto eliminado exitosamente" : "Error al eliminar Producto";
 			request.getSession().setAttribute("mensaje", mensaje);
 
 		} catch (Exception e) {
-			Logger.getLogger(LibrosController.class.getName()).log(Level.SEVERE, null, e);
+			Logger.getLogger(ProductoController.class.getName()).log(Level.SEVERE, null, e);
 			request.getSession().setAttribute("mensaje", "Error: " + e.getMessage());
 		}
 		listar(request, response);
@@ -253,7 +255,7 @@ public class LibrosController extends HttpServlet {
 
 			if (esAjax) {
 				// CASO 1: Petición AJAX - devolver JSON con los datos
-				List<LibroGenero> datos = modelo.obtenerLibroPorGenero();
+				//List<LibroGenero> datos = modelo.obtenerLibroPorGenero();
 
 				List<String> labels = new ArrayList<>();
 				List<Integer> values = new ArrayList<>();

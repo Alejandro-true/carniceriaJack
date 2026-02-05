@@ -451,7 +451,7 @@ if (nombreUsuario == null) {
         <!-- BRAND -->
         <a class="nb-brand" href="<%=contextPath%>/inicio.jsp">
             <div class="nb-brand-icon"><i class="fas fa-bone"></i></div>
-            La <span class="nb-brand-gold">Carnicería</span>
+            Carnicería <span class="nb-brand-gold">Jack</span>
         </a>
 
         <!-- MOBILE TOGGLER -->
@@ -483,8 +483,8 @@ if (nombreUsuario == null) {
 
                 <!-- Productos (Libros) -->
                 <li>
-                    <a class="nb-nav-link <%=currentUrl.contains("LibrosController") ? "active" : ""%>"
-                       href="<%=contextPath%>/LibrosController?op=listar">
+                    <a class="nb-nav-link <%=currentUrl.contains("ProductoController") ? "active" : ""%>"
+                       href="<%=contextPath%>/ProductoController?op=listar">
                         <i class="fas fa-tag"></i> Productos
                     </a>
                 </li>
