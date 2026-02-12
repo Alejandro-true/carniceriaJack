@@ -58,7 +58,6 @@ public class LoginController extends HttpServlet {
         
         String nombreUsuario = request.getParameter("usuario");
         String password = request.getParameter("password");
-        
         // Validar campos vacíos
         if (nombreUsuario == null || nombreUsuario.trim().isEmpty() ||
             password == null || password.trim().isEmpty()) {

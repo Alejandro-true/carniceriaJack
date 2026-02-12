@@ -475,9 +475,9 @@ if (nombreUsuario == null) {
 
                 <!-- Autores -->
                 <li>
-                    <a class="nb-nav-link <%=currentUrl.contains("AutoresController") ? "active" : ""%>"
-                       href="<%=contextPath%>/AutoresController?op=listar">
-                        <i class="fas fa-users"></i> Autores
+                    <a class="nb-nav-link <%=currentUrl.contains("ClienteController") ? "active" : ""%>"
+                       href="<%=contextPath%>/ClienteController?op=listar">
+                        <i class="fas fa-users"></i> Clientes
                     </a>
                 </li>
 
@@ -534,7 +534,7 @@ if (nombreUsuario == null) {
 
                 <div class="nb-dropdown-menu end" id="menuUser">
                     <div class="nb-drop-header"><i class="fas fa-user"></i> Cuenta</div>
-                    <a class="nb-drop-item" href="#">
+                    <a class="nb-drop-item" href="<%=contextPath%>/UsuariosController?op=perfil">
                         <i class="fas fa-user-pen"></i> Mi Perfil
                     </a>
                     <a class="nb-drop-item" href="#">

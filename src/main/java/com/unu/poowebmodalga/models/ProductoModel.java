@@ -29,6 +29,7 @@ public class ProductoModel extends Conexion {
 				producto.setPrecioUnitario(rs.getDouble("precio"));
 				producto.setStock(rs.getInt("stock"));
 				producto.setIdCategoria(rs.getInt("id_categoria"));
+				producto.setImagenUrl(rs.getString("ruta_imagen"));
 				productos.add(producto);
 			}
 
@@ -42,11 +43,40 @@ public class ProductoModel extends Conexion {
 
 	}
 
+	public List<Producto> listarPorCategoria(String categoria){
+		try {
+			ArrayList<Producto> productos = new ArrayList<>();
+			String sql = "CALL sp_listarProductoPorCategoria(?)";
+			this.abrirConexion();
+			cs = conexion.prepareCall(sql);
+			cs.setString(1, categoria);
+			rs = cs.executeQuery();
+			while (rs.next()) {
+				Producto producto = new Producto();
+				producto.setIdProducto(rs.getInt("p.id_producto"));
+				producto.setNombreProducto(rs.getString("p.nombre"));
+				producto.setPrecioUnitario(rs.getDouble("p.precio"));
+				producto.setStock(rs.getInt("p.stock"));
+				producto.setIdCategoria(rs.getInt("p.id_categoria"));
+				producto.setImagenUrl(rs.getString("ruta_imagen"));
+				producto.setNombreCategoria(categoria);
+				productos.add(producto);
+			}
+
+			this.cerrarConexion();
+			return productos;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			this.cerrarConexion();
+			return null;
+		}
+		
+	}
 	public int insertarProducto(Producto producto) {
 		try {
 
 			int filasAfectadas = 0;
-			String sql = "CALL sp_insertarProducto(?,?,?,?)";
+			String sql = "CALL sp_insertarProducto(?,?,?,?,?)";
 
 			this.abrirConexion();
 			cs = conexion.prepareCall(sql);
@@ -54,6 +84,7 @@ public class ProductoModel extends Conexion {
 			cs.setDouble(2, producto.getPrecioUnitario());
 			cs.setInt(3, producto.getStock());
 			cs.setInt(4, producto.getIdCategoria());
+			cs.setString(5, producto.getImagenUrl());
 			filasAfectadas = cs.executeUpdate();
 			this.cerrarConexion();
 			return filasAfectadas;
@@ -79,6 +110,7 @@ public class ProductoModel extends Conexion {
 				producto.setPrecioUnitario(rs.getDouble("precio"));
 				producto.setStock(rs.getInt("stock"));
 				producto.setIdCategoria(rs.getInt("id_categoria"));
+				producto.setImagenUrl(rs.getString("ruta_imagen"));
 			}
 			this.cerrarConexion();
 		} catch (Exception e) {
@@ -92,7 +124,7 @@ public class ProductoModel extends Conexion {
 	public int modificarProducto(Producto producto) {
 		try {
 			int filasAfectadas = 0;
-			String sql = "CALL sp_modificarProducto(?,?,?,?,?)";
+			String sql = "CALL sp_modificarProducto(?,?,?,?,?,?)";
 			this.abrirConexion();
 			cs = conexion.prepareCall(sql);
 			cs.setInt(1, producto.getIdProducto());
@@ -100,6 +132,7 @@ public class ProductoModel extends Conexion {
 			cs.setDouble(3, producto.getPrecioUnitario());
 			cs.setInt(4, producto.getStock());
 			cs.setInt(5, producto.getIdCategoria());
+			cs.setString(6, producto.getImagenUrl());
 			filasAfectadas = cs.executeUpdate();
 
 			// IMPORTANTE: Cerrar la conexión antes de retornar
@@ -113,13 +146,13 @@ public class ProductoModel extends Conexion {
 		}
 	}
 
-	public int eliminarProducto(int idautor) {
+	public int eliminarProducto(int idProducto) {
 		try {
 			int filasAfectadas = 0;
 			String sql = "CALL sp_eliminarProducto(?)";
 			this.abrirConexion();
 			cs = conexion.prepareCall(sql);
-			cs.setInt(1, idautor);
+			cs.setInt(1, idProducto);
 			filasAfectadas = cs.executeUpdate();
 
 			this.cerrarConexion();

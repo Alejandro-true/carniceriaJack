@@ -25,6 +25,7 @@ public class ClienteModel extends Conexion {
 
 			while (rs.next()) {
 				Cliente cliente = new Cliente();
+				cliente.setIdCliente(Integer.parseInt(rs.getString("id_cliente")));
 				cliente.setDni(rs.getString("dni"));
 				cliente.setNombreCompleto(rs.getString("nombre_completo"));
 				cliente.setEmail(rs.getString("email"));
@@ -46,7 +47,7 @@ public class ClienteModel extends Conexion {
 	public int insertarCliente(Cliente cliente) {
 		try {
 			int filasAfectadas = 0;
-			String sql = "CALL sp_insertarLibro(?,?,?,?,?,?)";
+			String sql = "CALL sp_insertarLibro(?,?,?,?,?)";
 
 			this.abrirConexion();
 			cs = conexion.prepareCall(sql);
@@ -55,7 +56,6 @@ public class ClienteModel extends Conexion {
 			cs.setString(3, cliente.getDireccion());
 			cs.setString(4, cliente.getEmail());
 			cs.setString(5, cliente.getDni());
-			cs.setString(6, cliente.getEstado() + "");
 			filasAfectadas = cs.executeUpdate();
 			this.cerrarConexion();
 			return filasAfectadas;
@@ -70,7 +70,7 @@ public class ClienteModel extends Conexion {
 	public Cliente obtenerCliente(int idCliente) {
 		Cliente cliente = new Cliente();
 		try {
-			String sql = "CALL sp_obtenerLibro(?)";
+			String sql = "CALL sp_obtenerCliente(?)";
 			this.abrirConexion();
 			cs = conexion.prepareCall(sql);
 			cs.setInt(1, idCliente);
@@ -94,10 +94,10 @@ public class ClienteModel extends Conexion {
 		return cliente;
 	}
 
-	public int modificarLibro(Cliente cliente) {
+	public int modificarCliente(Cliente cliente) {
 		try {
 			int filasAfectadas = 0;
-			String sql = "CALL sp_modificarLibro(?,?,?,?,?,?,?)";
+			String sql = "CALL sp_modificarCliente(?,?,?,?,?,?)";
 			this.abrirConexion();
 			cs = conexion.prepareCall(sql);
 			cs.setInt(1, cliente.getIdCliente());
@@ -106,7 +106,7 @@ public class ClienteModel extends Conexion {
 			cs.setString(4, cliente.getDireccion());
 			cs.setString(5, cliente.getEmail());
 			cs.setString(6, cliente.getDni());
-			cs.setString(7, cliente.getEstado() + "");
+			//cs.setString(7, cliente.getEstado() + "");
 			filasAfectadas = cs.executeUpdate();
 
 			this.cerrarConexion();

@@ -6,21 +6,38 @@ public class Producto {
 	private double precioUnitario;
 	private int stock;
 	private int idCategoria;
-
+	private String nombreCategoria;
+	private String imagenUrl;
 	public Producto() {
 
 	}
 
-	
-	public Producto(int idProducto, String nombreProducto, double precioUnitario, int stock, int idCategoria) {
+	public Producto(int idProducto, String nombreProducto, double precioUnitario, int stock, int idCategoria,
+			String nombreCategoria) {
 		super();
 		this.idProducto = idProducto;
 		this.nombreProducto = nombreProducto;
 		this.precioUnitario = precioUnitario;
 		this.stock = stock;
 		this.idCategoria = idCategoria;
+		this.nombreCategoria = nombreCategoria;
 	}
 
+	public String getImagenUrl() {
+		return imagenUrl;
+	}
+
+	public void setImagenUrl(String imagenUrl) {
+		this.imagenUrl = imagenUrl;
+	}
+
+	public String getNombreCategoria() {
+		return nombreCategoria;
+	}
+
+	public void setNombreCategoria(String nombreCategoria) {
+		this.nombreCategoria = nombreCategoria;
+	}
 
 	public int getIdProducto() {
 		return idProducto;
@@ -61,6 +78,5 @@ public class Producto {
 	public void setIdCategoria(int idCategoria) {
 		this.idCategoria = idCategoria;
 	}
-	
 
 }

@@ -204,4 +204,19 @@ public class UsuariosModel extends Conexion {
             return 0;
         }
     }
+    
+    public boolean isAdmin(int idUsuario) {
+    	try {
+			String sql = "CALL sp_esAdmin(?)";
+			this.abrirConexion();
+			cs = conexion.prepareCall(sql);
+			cs.setInt(1, idUsuario);
+			this.cerrarConexion();
+			return cs.execute();
+		} catch (Exception e) {
+			e.printStackTrace();
+			this.cerrarConexion();
+			return false;
+		}
+    }
 }

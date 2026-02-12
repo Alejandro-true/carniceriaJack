@@ -6,19 +6,22 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.unu.poowebmodalga.beans.Producto;
-import com.unu.poowebmodalga.dto.LibroGenero;
+import com.unu.poowebmodalga.beans.Usuario;
 import com.unu.poowebmodalga.models.CategoriaModel;
-import com.unu.poowebmodalga.models.ClienteModel;
 import com.unu.poowebmodalga.models.ProductoModel;
-import com.unu.poowebmodalga.utilitarios.UtilsJson;
 
 @WebServlet("/ProductoController")
 @MultipartConfig
@@ -27,6 +30,9 @@ public class ProductoController extends HttpServlet {
 
 	ProductoModel modelo = new ProductoModel();
 	CategoriaModel modeloCategoria = new CategoriaModel();
+	HttpSession session;
+	private static final String UPLOAD_DIRECTORY = "uploads/productos";
+
 	public ProductoController() {
 		super();
 	}
@@ -70,9 +76,9 @@ public class ProductoController extends HttpServlet {
 		case "eliminar":
 			eliminar(request, response);
 			break;
-		case "reporte":
-			reporte(request, response);
-			break;
+		/*
+		 * case "reporte": reporte(request, response); break;
+		 */
 		default:
 			listar(request, response);
 			break;
@@ -85,17 +91,20 @@ public class ProductoController extends HttpServlet {
 	private void listar(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			response.setContentType("text/html; charset=UTF-8");
-			request.setAttribute("listaProducto", modelo.listarProducto());
-			request.getRequestDispatcher("/producto/listaProductos.jsp").forward(request, response);
-		} catch (ServletException | IOException e) {
-			Logger.getLogger(ProductoController.class.getName()).log(Level.SEVERE, null, e);
-		}
-	}
+			HttpSession session = request.getSession(false);
+			if (session == null || session.getAttribute("usuario") == null) {
+				response.sendRedirect(request.getContextPath() + "/auth/login.jsp");
+				return;
+			}
+			String categoria = request.getParameter("categoria");
 
-	private void listarPorCategoria(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			response.setContentType("text/html; charset=UTF-8");
-			request.setAttribute("listaProducto", modelo.listarProducto());
+			request.setAttribute("usuario", (Usuario) session.getAttribute("usuario"));
+			List<Producto> listaProducto;
+			if (categoria == null)
+				listaProducto = modelo.listarProducto();
+			else
+				listaProducto = modelo.listarPorCategoria(categoria);
+			request.setAttribute("listaProducto", listaProducto);
 			request.getRequestDispatcher("/producto/listaProductos.jsp").forward(request, response);
 		} catch (ServletException | IOException e) {
 			Logger.getLogger(ProductoController.class.getName()).log(Level.SEVERE, null, e);
@@ -154,6 +163,31 @@ public class ProductoController extends HttpServlet {
 			producto.setPrecioUnitario(Double.parseDouble(request.getParameter("precio")));
 			producto.setIdCategoria(Integer.parseInt(request.getParameter("categoria")));
 
+			// =========================
+			// SUBIDA DE IMAGEN
+			// =========================
+			String uploadPath = getServletContext().getRealPath("/uploads/productos");
+
+			File uploadDir = new File(uploadPath);
+			if (!uploadDir.exists()) {
+				uploadDir.mkdirs();
+			}
+
+			Part filePart = request.getPart("imagen");
+
+			String rutaImagen = null;
+			if (filePart != null && filePart.getSize() > 0) {
+				String fileName = System.currentTimeMillis() + "_"
+						+ Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+
+				filePart.write(uploadPath + File.separator + fileName);
+
+				rutaImagen = "uploads/productos/" + fileName;
+			}
+
+			// Asignar ruta al producto
+			producto.setImagenUrl(rutaImagen);
+
 			int resultado = modelo.insertarProducto(producto);
 
 			if (esAjax) {
@@ -161,13 +195,11 @@ public class ProductoController extends HttpServlet {
 						resultado > 0 ? "Producto registrado exitosamente" : "Error al registrar producto");
 			} else {
 				response.setContentType("text/html; charset=UTF-8");
-				if (resultado > 0) {
-					request.getSession().setAttribute("mensaje", "Producto registrado exitosamente");
-				} else {
-					request.getSession().setAttribute("mensaje", "Error al registrar Producto");
-				}
+				request.getSession().setAttribute("mensaje",
+						resultado > 0 ? "Producto registrado exitosamente" : "Error al registrar Producto");
 				listar(request, response);
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 
@@ -185,6 +217,28 @@ public class ProductoController extends HttpServlet {
 		}
 	}
 
+	// Método para extraer el nombre del archivo
+	private String getFileName(Part part) {
+		String contentDisp = part.getHeader("content-disposition");
+		String[] tokens = contentDisp.split(";");
+		for (String token : tokens) {
+			if (token.trim().startsWith("filename")) {
+				return token.substring(token.indexOf("=") + 2, token.length() - 1);
+			}
+		}
+		return "";
+	}
+
+	// Método para generar un nombre único (evitar sobrescribir archivos)
+	private String generarNombreUnico(String fileName) {
+		String extension = "";
+		int i = fileName.lastIndexOf('.');
+		if (i > 0) {
+			extension = fileName.substring(i);
+		}
+		return System.currentTimeMillis() + "_" + UUID.randomUUID().toString() + extension;
+	}
+
 	/**
 	 * Modifica un producto existente
 	 */
@@ -196,7 +250,32 @@ public class ProductoController extends HttpServlet {
 			producto.setStock(Integer.parseInt(request.getParameter("stock")));
 			producto.setPrecioUnitario(Double.parseDouble(request.getParameter("precio")));
 			producto.setIdCategoria(Integer.parseInt(request.getParameter("categoria")));
+			Part imagenPart = request.getPart("imagen");
 
+			if (imagenPart != null && imagenPart.getSize() > 0) {
+				String fileName = getFileName(imagenPart);
+				String uniqueFileName = generarNombreUnico(fileName);
+
+				// Obtener la ruta física del directorio de uploads
+				String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIRECTORY;
+
+				// Crear el directorio si no existe
+				File uploadDir = new File(uploadPath);
+				if (!uploadDir.exists()) {
+					uploadDir.mkdirs();
+				}
+
+				// Guardar el archivo
+				String filePath = uploadPath + File.separator + uniqueFileName;
+				imagenPart.write(filePath);
+
+				// Guardar la URL relativa en el producto
+				String imagenUrl = request.getContextPath() + "/" + UPLOAD_DIRECTORY + "/" + uniqueFileName;
+				producto.setImagenUrl(imagenUrl);
+			} else {
+				// Imagen por defecto si no se sube ninguna
+				producto.setImagenUrl(request.getContextPath() + "/images/producto-default.png");
+			}
 			int resultado = modelo.modificarProducto(producto);
 
 			if (esAjax) {
@@ -247,60 +326,47 @@ public class ProductoController extends HttpServlet {
 		listar(request, response);
 	}
 
-	private void reporte(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			// Detectar si es una petición AJAX verificando el header Accept
-			String acceptHeader = request.getHeader("Accept");
-			boolean esAjax = acceptHeader != null && acceptHeader.contains("application/json");
-
-			if (esAjax) {
-				// CASO 1: Petición AJAX - devolver JSON con los datos
-				//List<LibroGenero> datos = modelo.obtenerLibroPorGenero();
-
-				List<String> labels = new ArrayList<>();
-				List<Integer> values = new ArrayList<>();
-
-				for (LibroGenero d : datos) {
-					String genero = d.getNombreGenero();
-					Integer total = d.getTotal();
-
-					labels.add(genero == null ? "" : genero);
-					values.add(total == null ? 0 : total);
-				}
-
-				// Construir el objeto data como JSON
-				String dataJson = new StringBuilder(128).append("{").append("\"labels\":")
-						.append(UtilsJson.jsonArrayStrings(labels)).append(',').append("\"values\":")
-						.append(UtilsJson.jsonArrayInts(values)).append("}").toString();
-
-				// Enviar respuesta JSON
-				enviarJSON(response, true, "OK", dataJson);
-
-			} else {
-				// CASO 2: Petición directa desde navegador - mostrar JSP
-				response.setContentType("text/html; charset=UTF-8");
-				request.getRequestDispatcher("/libros/reporte.jsp").forward(request, response);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			// Manejar error según el tipo de petición
-			String acceptHeader = request.getHeader("Accept");
-			boolean esAjax = acceptHeader != null && acceptHeader.contains("application/json");
-
-			if (esAjax) {
-				enviarJSON(response, false, "Error: " + e.getMessage(), null);
-			} else {
-				try {
-					request.setAttribute("error", "Error al cargar el reporte: " + e.getMessage());
-					request.getRequestDispatcher("/error.jsp").forward(request, response);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-		}
-	}
+	/*
+	 * private void reporte(HttpServletRequest request, HttpServletResponse
+	 * response) { try { // Detectar si es una petición AJAX verificando el header
+	 * Accept String acceptHeader = request.getHeader("Accept"); boolean esAjax =
+	 * acceptHeader != null && acceptHeader.contains("application/json");
+	 * 
+	 * if (esAjax) { // CASO 1: Petición AJAX - devolver JSON con los datos //
+	 * List<LibroGenero> datos = modelo.obtenerLibroPorGenero();
+	 * 
+	 * List<String> labels = new ArrayList<>(); List<Integer> values = new
+	 * ArrayList<>();
+	 * 
+	 * for (LibroGenero d : datos) { String genero = d.getNombreGenero(); Integer
+	 * total = d.getTotal();
+	 * 
+	 * labels.add(genero == null ? "" : genero); values.add(total == null ? 0 :
+	 * total); }
+	 * 
+	 * // Construir el objeto data como JSON String dataJson = new
+	 * StringBuilder(128).append("{").append("\"labels\":")
+	 * .append(UtilsJson.jsonArrayStrings(labels)).append(',').append("\"values\":")
+	 * .append(UtilsJson.jsonArrayInts(values)).append("}").toString();
+	 * 
+	 * // Enviar respuesta JSON enviarJSON(response, true, "OK", dataJson);
+	 * 
+	 * } else { // CASO 2: Petición directa desde navegador - mostrar JSP
+	 * response.setContentType("text/html; charset=UTF-8");
+	 * request.getRequestDispatcher("/libros/reporte.jsp").forward(request,
+	 * response); }
+	 * 
+	 * } catch (Exception e) { e.printStackTrace();
+	 * 
+	 * // Manejar error según el tipo de petición String acceptHeader =
+	 * request.getHeader("Accept"); boolean esAjax = acceptHeader != null &&
+	 * acceptHeader.contains("application/json");
+	 * 
+	 * if (esAjax) { enviarJSON(response, false, "Error: " + e.getMessage(), null);
+	 * } else { try { request.setAttribute("error", "Error al cargar el reporte: " +
+	 * e.getMessage()); request.getRequestDispatcher("/error.jsp").forward(request,
+	 * response); } catch (Exception ex) { ex.printStackTrace(); } } } }
+	 */
 
 	/**
 	 * Envía una respuesta JSON
